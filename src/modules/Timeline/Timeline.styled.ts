@@ -16,9 +16,36 @@ export const TimelineWrapper = styled.div`
     justify-content: center;
     align-items: center;
     font-family: sans-serif;
+    position: relative;
+    overflow: hidden;
+
+    &:before, &:after {
+        content: '';
+        position: absolute;
+        background: #e0e0e0;
+    }
+
+    &:before {
+        top: 50%;
+        left: 0;
+        right: 0;
+        height: 1px;
+        transform: translateY(-50%);
+    }
+
+    &:after {
+        top: 0;
+        bottom: 0;
+        left: 50%;
+        width: 1px;
+        transform: translateX(-50%);
+    }
 
     @media (max-width: 768px) {
         padding: 20px;
+        &:before, &:after {
+            display: none;
+        }
     }
 `;
 
@@ -29,6 +56,8 @@ export const Container = styled.div`
     border-radius: 16px;
     padding: 40px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
 
     @media (max-width: 768px) {
         padding: 20px;
@@ -37,7 +66,8 @@ export const Container = styled.div`
 
 export const Header = styled.header`
     padding-left: 20px;
-    border-left: 4px solid #f971c2;
+    border-left: 4px solid;
+    border-image: linear-gradient(to bottom, #F971C2, #1A4E9B) 1;
     margin-bottom: 40px;
 
     @media (max-width: 768px) {
