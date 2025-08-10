@@ -9,7 +9,10 @@ module.exports = {
         clean: true
     },
     resolve: {
-        extensions: [".tsx", ".ts", ".js"]
+        extensions: [".tsx", ".ts", ".js"] ,
+        alias: {
+            '@': path.resolve(__dirname, 'src')
+        }
     },
     devServer: {
         static: path.join(__dirname, "public"),
