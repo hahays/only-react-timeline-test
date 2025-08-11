@@ -1,4 +1,14 @@
-const timelineData = [
+export interface Event {
+    year: number;
+    description: string;
+}
+
+export interface TimelineCategory {
+    category: string;
+    events: Event[];
+}
+
+export const timelineData: TimelineCategory[] = [
     {
         category: "Технологии",
         events: [
@@ -150,5 +160,3 @@ const timelineData = [
         ]
     }
 ];
-
-export default timelineData;

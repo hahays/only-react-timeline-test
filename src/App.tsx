@@ -1,10 +1,14 @@
 import React from 'react';
-import {Timeline} from "@/modules/Timeline/Timeline";
-
-
+import { Timeline } from "@/modules/Timeline/Timeline";
+import { GlobalStyle } from "@/styles/globals";
 
 const App: React.FC = () => {
-    return <Timeline />;
+    return (
+        <>
+            <GlobalStyle />
+            <Timeline />
+        </>
+    );
 };
 
 export default App;
