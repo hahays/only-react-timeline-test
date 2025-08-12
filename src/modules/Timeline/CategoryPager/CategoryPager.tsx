@@ -1,15 +1,10 @@
 import React from "react";
 import {Btn, Buttons, Label, Pager} from "./CategoryPager.styled";
+import {CategoryPagerProps} from "@/modules/Timeline/types";
 
-type Props = {
-    label?: string;
-    onPrev: () => void | Promise<any>;
-    onNext: () => void | Promise<any>;
-    disablePrev?: boolean;
-    disableNext?: boolean;
-};
 
-export const CategoryPager: React.FC<Props> = ({
+
+export const CategoryPager: React.FC<CategoryPagerProps> = ({
                                                    label,
                                                    onPrev,
                                                    onNext,

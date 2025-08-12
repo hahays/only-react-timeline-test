@@ -7,31 +7,19 @@ export const Container = styled.section`
     height: 100vh;
     margin-left: 320px;
     margin-right: 160px;
-    border-left: 1px solid rgba(13, 34, 70, 0.08);
-    border-right: 1px solid rgba(13, 34, 70, 0.08);
-    background: #F4F5F9;
+    border-left: 1px solid ${({ theme }) => theme.colors.border};
+    border-right: 1px solid ${({ theme }) => theme.colors.border};
+    background: ${({ theme }) => theme.colors.bg};
     overflow: hidden;
-    --circle-top: 215px;
-
-    &::before, &::after {
-        content: "";
-        position: absolute;
-        background: rgba(13, 34, 70, .08);
-        z-index: 0;
-    }
-
+    --circle-top: ${({ theme }) => theme.layout.circleTop};
 
     @media (max-width: 768px) {
         height: auto;
         min-height: 100vh;
         margin: 0;
         width: 100%;
-        &::before, &::after {
-            content: none;
-        }
     }
 `;
-
 
 export const Header = styled.header`
     position: absolute;
@@ -40,7 +28,7 @@ export const Header = styled.header`
     padding-left: 78px;
     align-items: center;
     border-left: 5px solid;
-    border-image: linear-gradient(#3877EE, #EF5DA8) 1;
+    border-image: linear-gradient(var(--color-accent), var(--color-accent-2)) 1;
     max-width: 520px;
     z-index: 2;
     pointer-events: none;
@@ -62,7 +50,7 @@ export const Title = styled.h1`
     font-size: 56px;
     font-weight: 700;
     line-height: 120%;
-    color: #2b4468;
+    color: var(--color-title);
     pointer-events: none;
 
     @media (max-width: 768px) {
@@ -74,6 +62,7 @@ export const Title = styled.h1`
         display: block;
     }
 `;
+
 export const CircleMount = styled.div`
     position: absolute;
     left: 50%;
@@ -86,7 +75,7 @@ export const CircleMount = styled.div`
     &::before, &::after {
         content: "";
         position: absolute;
-        background: rgba(13, 34, 70, 0.08);
+        background: var(--color-border);
         z-index: 0;
     }
 
@@ -106,29 +95,27 @@ export const CircleMount = styled.div`
         transform: translateX(-50%);
     }
 
-    @media (max-width: 768px) {
-        display: none;
-    }
+    @media (max-width: 768px) { display: none; }
 `;
-
 
 export const PagerMount = styled.div`
     position: absolute;
-    left: 118px;
-    top: calc(var(--circle-top) + 350px + 75px);
+    left: 85px;
+    top: calc(var(--circle-top) + 350px + 82px);
     z-index: 5;
 
     @media (max-width: 768px) {
         position: relative;
         left: auto;
-        top: auto;
-        margin: 20px;
+        top: 20px;
+        margin: 0 20px;
     }
 `;
+
 export const SliderMount = styled.div`
     position: absolute;
-    left: 40px;
-    right: 40px;
+    left: 9px;
+    right: -5px;
     top: calc(var(--circle-top) + 530px + 24px);
     bottom: 104px;
 
@@ -142,7 +129,6 @@ export const SliderMount = styled.div`
         margin-bottom: 78px;
     }
 `;
-
 
 export const MobileDate = styled.div`
     display: none;

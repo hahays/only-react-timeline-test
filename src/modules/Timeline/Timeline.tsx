@@ -1,24 +1,45 @@
-import React, {useMemo, useRef, useState} from "react";
-import {CircleMount, Container, Header, MobileDate, PagerMount, SliderMount, Title} from "./Timeline.styled";
-import {timelineData} from "./data";
-import {CircleNavigation, CircleNavRef} from "./CircleNavigation/CircleNavigation";
-import {DateRangeDisplay} from "./DateRangeDisplay/DateRangeDisplay";
-import {SwiperCarousel} from "./SwiperCarousel/SwiperCarousel";
-import {CategoryPagerDock} from "@/modules/Timeline/CategoryPager/CategoryPagerDock/CategoryPagerDock";
+import React, {useMemo, useRef, useState, useCallback, JSX} from "react";
+import { CircleMount, Container, Header, MobileDate, PagerMount, SliderMount, Title } from "./Timeline.styled";
+import { timelineData } from "./data";
+import { CircleNavigation, CircleNavRef } from "./CircleNavigation/CircleNavigation";
+import { DateRangeDisplay } from "./DateRangeDisplay/DateRangeDisplay";
+import { SwiperCarousel } from "./SwiperCarousel/SwiperCarousel";
+import { CategoryPagerDock } from "@/modules/Timeline/CategoryPager/CategoryPagerDock/CategoryPagerDock";
 
-export const Timeline: React.FC = () => {
+export function Timeline(): JSX.Element {
     const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
     const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-    const [showActiveLabel, setShowActiveLabel] = useState(false);
     const [fadingEvents, setFadingEvents] = useState(false);
+    const [previewRange, setPreviewRange] = useState<{ start: number; end: number } | null>(null);
 
     const circleRef = useRef<CircleNavRef>(null);
 
     const activeCategory = timelineData[activeCategoryIndex];
     const events = activeCategory.events;
 
-    const startYear = useMemo(() => events?.[0]?.year ?? 0, [events]);
-    const endYear = useMemo(() => events?.[events.length - 1]?.year ?? 0, [events]);
+    const activeStart = useMemo(() => events?.[0]?.year ?? 0, [events]);
+    const activeEnd = useMemo(() => events?.[events.length - 1]?.year ?? 0, [events]);
+
+    const range = previewRange ?? { start: activeStart, end: activeEnd };
+
+    const handleSetCategory = useCallback((i: number) => {
+        setActiveCategoryIndex(i);
+        setActiveSlideIndex(0);
+    }, []);
+
+    const handleBeforeRotate = useCallback((nextIndex: number) => {
+        const next = timelineData[nextIndex]?.events ?? [];
+        const start = next[0]?.year ?? 0;
+        const end = next[next.length - 1]?.year ?? 0;
+        setPreviewRange({ start, end });
+        setFadingEvents(true);
+    }, []);
+
+    const handleRotateComplete = useCallback((nextIndex: number) => {
+        setActiveCategoryIndex(nextIndex);
+        setPreviewRange(null);
+        setTimeout(() => setFadingEvents(false), 400);
+    }, []);
 
     return (
         <Container>
@@ -29,28 +50,16 @@ export const Timeline: React.FC = () => {
                     ref={circleRef}
                     categories={timelineData}
                     activeCategoryIndex={activeCategoryIndex}
-                    setActiveCategoryIndex={(i) => {
-                        setActiveCategoryIndex(i);
-                        setActiveSlideIndex(0);
-                    }}
-                    onBeforeRotate={() => {
-                        setShowActiveLabel(false);
-                        setFadingEvents(true);
-                    }}
-                    onRotateComplete={() => {
-                        setTimeout(() => {
-                            setShowActiveLabel(true);
-                            setFadingEvents(false);
-                        }, 700);
-                    }}
+                    setActiveCategoryIndex={handleSetCategory}
+                    onBeforeRotate={handleBeforeRotate}
+                    onRotateComplete={handleRotateComplete}
                 />
-                <DateRangeDisplay startYear={startYear} endYear={endYear}/>
+                <DateRangeDisplay startYear={range.start} endYear={range.end} />
             </CircleMount>
 
             <MobileDate>
-                <DateRangeDisplay startYear={startYear} endYear={endYear}/>
+                <DateRangeDisplay startYear={range.start} endYear={range.end} />
             </MobileDate>
-
 
             <SliderMount>
                 <SwiperCarousel
@@ -58,6 +67,7 @@ export const Timeline: React.FC = () => {
                     activeSlideIndex={activeSlideIndex}
                     onSlideChange={setActiveSlideIndex}
                     fading={fadingEvents}
+                    category={activeCategory.category}
                 />
             </SliderMount>
 
@@ -75,4 +85,4 @@ export const Timeline: React.FC = () => {
             </PagerMount>
         </Container>
     );
-};
+}

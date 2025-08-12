@@ -1,12 +1,12 @@
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
-  position: relative;
+    position: relative;
 `;
 
 export const DesktopOnly = styled.div`
-  display: block;
-  @media (max-width: 768px) { display: none; }
+    display: block;
+    @media (max-width: 768px) { display: none; }
 `;
 
 export const MobileRow = styled.div`
@@ -21,7 +21,7 @@ export const MobileRow = styled.div`
 
 export const Dots = styled.div`
     display: none;
-
+    @media (max_width: 768px) { display: none; }
     @media (max-width: 768px) {
         display: flex;
         position: absolute;
@@ -46,13 +46,13 @@ export const Dots = styled.div`
             inset: 0;
             margin: 4px;
             border-radius: 50%;
-            background: #42567A;
+            background: var(--color-text-weak);
             opacity: 0.4;
             transition: opacity .2s ease, transform .2s ease;
         }
 
         button[data-active="true"]::before {
-            background: #42567A;
+            background: var(--color-text-weak);
             opacity: 1;
             transform: scale(1.1);
         }

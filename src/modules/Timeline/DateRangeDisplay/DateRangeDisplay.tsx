@@ -1,57 +1,76 @@
-import React, {useEffect, useState} from "react";
+import React, {JSX, useEffect, useRef, useState} from "react";
 import {DateRange} from "./DateRangeDisplay.styled";
 
-type Props = { startYear: number; endYear: number };
+import type {DateRangeDisplayProps} from "@/modules/Timeline/types";
+import {usePrefersReducedMotion} from "@/shared/hooks/usePreferReducedMotion";
 
-export const DateRangeDisplay: React.FC<Props> = ({startYear, endYear}) => {
+type RAF = number;
+
+function easeOutCubic(t: number): number {
+    const value = 1 - Math.pow(1 - t, 3);
+    return value;
+}
+
+export function DateRangeDisplay({startYear, endYear}: DateRangeDisplayProps): JSX.Element {
     const [from, setFrom] = useState(startYear);
     const [to, setTo] = useState(endYear);
 
-    useEffect(() => {
-        let id = 0;
-        const step = startYear > from ? 1 : -1;
-        const tick = () => {
-            setFrom((prev) => {
-                const next = prev + step;
-                if ((step > 0 && next >= startYear) || (step < 0 && next <= startYear)) {
-                    cancelAnimationFrame(id);
-                    return startYear;
-                }
-                return next;
-            });
-            id = requestAnimationFrame(tick);
-        };
-        id = requestAnimationFrame(tick);
-        return () => cancelAnimationFrame(id);
-    }, [startYear]);
+    const rafFrom = useRef<RAF | null>(null);
+    const rafTo = useRef<RAF | null>(null);
+    const reduced = usePrefersReducedMotion();
 
-    useEffect(() => {
-        let id = 0;
-        const t0 = performance.now();
-        const run = (t: number) => {
-            if (t - t0 < 140) {
-                id = requestAnimationFrame(run);
+    const animateInt = (
+        setter: React.Dispatch<React.SetStateAction<number>>,
+        getCurrent: () => number,
+        target: number,
+        rafRef: React.MutableRefObject<RAF | null>,
+        durationMs: number,
+        delayMs: number
+    ) => {
+        if (reduced) {
+            setter(target);
+            return;
+        }
+        const startValue = getCurrent();
+        if (startValue === target) {
+            setter(target);
+            return;
+        }
+        const startAt = performance.now() + delayMs;
+        const endAt = startAt + durationMs;
+        const tick = (now: number) => {
+            if (now < startAt) {
+                rafRef.current = requestAnimationFrame(tick);
                 return;
             }
-            const step = endYear > to ? 1 : -1;
-            setTo((prev) => {
-                const next = prev + step;
-                if ((step > 0 && next >= endYear) || (step < 0 && next <= endYear)) {
-                    cancelAnimationFrame(id);
-                    return endYear;
-                }
-                return next;
-            });
-            id = requestAnimationFrame(run);
+            const t = Math.min(1, (now - startAt) / (endAt - startAt));
+            const v = Math.round(startValue + (target - startValue) * easeOutCubic(t));
+            setter(v);
+            if (t < 1) rafRef.current = requestAnimationFrame(tick);
         };
-        id = requestAnimationFrame(run);
-        return () => cancelAnimationFrame(id);
-    }, [endYear]);
+        rafRef.current = requestAnimationFrame(tick);
+    };
+
+    useEffect(() => {
+        if (rafFrom.current) cancelAnimationFrame(rafFrom.current);
+        animateInt(setFrom, () => from, startYear, rafFrom, 600, 0);
+        return () => {
+            if (rafFrom.current) cancelAnimationFrame(rafFrom.current);
+        };
+    }, [startYear, reduced]);
+
+    useEffect(() => {
+        if (rafTo.current) cancelAnimationFrame(rafTo.current);
+        animateInt(setTo, () => to, endYear, rafTo, 700, reduced ? 0 : 120);
+        return () => {
+            if (rafTo.current) cancelAnimationFrame(rafTo.current);
+        };
+    }, [endYear, reduced]);
 
     return (
-        <DateRange>
+        <DateRange aria-live="polite" aria-atomic="true">
             <span>{from}</span>
             <span>{to}</span>
         </DateRange>
     );
-};
+}

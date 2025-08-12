@@ -8,26 +8,27 @@ export const DateRange = styled.div`
     display: flex;
     gap: 24px;
     align-items: center;
-
     z-index: 12;
     pointer-events: none;
 
     span {
+        font-variant-numeric: tabular-nums;
         font-family: "PT Sans", sans-serif;
         font-weight: 700;
+        min-width: 4ch;
         font-size: 200px;
         line-height: 160px;
+        will-change: contents;
         letter-spacing: -0.02em;
     }
 
     span:first-child {
-        color: #3A62F8;
+        color: var(--range-from);
     }
 
     span:last-child {
-        color: #F4599D;
+        color: var(--range-to);
     }
-
 
     @media (max-width: 768px) {
         position: static;

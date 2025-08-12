@@ -1,23 +1,16 @@
 import React, {forwardRef, useEffect, useImperativeHandle, useRef, useState,} from "react";
 import {Circle, CircleInner, DotNumber, Point, Tooltip, Upright} from "./CircleNavigation.styled";
 import {gsap} from "gsap";
+import {CircleNavigationProps} from "@/modules/Timeline/types";
 
-type Props = {
-    categories: any[];
-    activeCategoryIndex: number;
-    setActiveCategoryIndex: (index: number) => void;
-    onBeforeRotate?: (nextIndex: number) => void;
-    onRotateComplete?: (index: number) => void;
-};
 
 const SIZE = 530;
 const RADIUS = SIZE / 2;
 const SLOT_ANGLE = 60;
-
-
 const ANGLE_OFFSET = -30;
-
 const START_AT = 330 + ANGLE_OFFSET;
+
+
 const baseAngleForIndex = (i: number) => (START_AT + i * SLOT_ANGLE) % 360;
 
 const targetRotationCW = (currentRot: number, index: number) => {
@@ -31,7 +24,7 @@ export type CircleNavRef = {
     rotateByStep: (step: number, total: number) => Promise<number>;
 };
 
-export const CircleNavigation = forwardRef<CircleNavRef, Props>(function CircleNavigation(
+export const CircleNavigation = forwardRef<CircleNavRef, CircleNavigationProps>(function CircleNavigation(
     {categories, activeCategoryIndex, setActiveCategoryIndex, onBeforeRotate, onRotateComplete},
     ref
 ) {
@@ -70,15 +63,18 @@ export const CircleNavigation = forwardRef<CircleNavRef, Props>(function CircleN
 
     const rotateToIndex = async (index: number) => {
         if (index === activeCategoryIndex) return;
-        setActiveCategoryIndex(index);
-        onRotateComplete?.(index);
-        setPreviewIndex(index);
+
         onBeforeRotate?.(index);
+        setPreviewIndex(index);
+
         const desired = targetRotationCW(rotationAbs, index);
         await animateTo(desired);
+
         setPreviewIndex(null);
         setShowLabel(true);
 
+        setActiveCategoryIndex(index);
+        onRotateComplete?.(index);
     };
 
     const rotateByStep = async (step: number, total: number) => {

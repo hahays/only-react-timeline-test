@@ -5,57 +5,42 @@ export const Pager = styled.div`
     flex-direction: column;
     align-items: flex-start;
     gap: 14px;
-
-    @media (max-width: 768px) {
-        gap: 8px;
-    }
+    @media (max-width: 768px) { gap: 8px; }
 `;
 
 export const Label = styled.div`
     font-family: "PT Sans", sans-serif;
     font-size: 14px;
-    color: #42567A;
+    color: var(--color-text-weak);
 `;
 
 export const Buttons = styled.div`
     display: flex;
     gap: 20px;
-
-    @media (max-width: 768px) {
-        gap: 12px;
-    }
+    @media (max-width: 768px) { gap: 12px; }
 `;
 
 export const Btn = styled.button`
     width: 50px;
     height: 50px;
     border-radius: 999px;
-    border: 1px solid rgba(13, 34, 70, .16);
+    border: 1px solid var(--color-border-strong);
     background: #fff;
-    color: #42567A;
+    color: var(--color-text-weak);
     font-size: 20px;
     display: grid;
     place-items: center;
     cursor: pointer;
     transition: box-shadow .2s ease, transform .1s ease, opacity .2s ease;
 
-    &:hover:not(:disabled) {
-        box-shadow: 0 4px 18px rgba(26, 78, 155, .16);
-    }
-
-    &:active:not(:disabled) {
-        transform: scale(.98);
-    }
-
-    &:disabled {
-        opacity: .4;
-        cursor: default;
-    }
+    &:hover:not(:disabled) { box-shadow: 0 4px 18px var(--shadow); }
+    &:active:not(:disabled) { transform: scale(.98); }
+    &:disabled { opacity: .4; cursor: default; }
 
     @media (max-width: 768px) {
         width: 31px;
         height: 31px;
         font-size: 16px;
-        background: #F4F5F9;
+        background: var(--color-bg);
     }
 `;

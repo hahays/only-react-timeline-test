@@ -1,14 +1,15 @@
-import React from 'react';
-import { Timeline } from "@/modules/Timeline/Timeline";
-import { GlobalStyle } from "@/styles/globals";
+import React from "react";
+import {ThemeProvider} from "styled-components";
+import {theme} from "@/theme/theme";
 
-const App: React.FC = () => {
+import {Timeline} from "@/modules/Timeline/Timeline";
+import {GlobalStyle} from "@/GlobalStyle";
+
+export default function App() {
     return (
-        <>
-            <GlobalStyle />
-            <Timeline />
-        </>
+        <ThemeProvider theme={theme}>
+            <GlobalStyle/>
+            <Timeline/>
+        </ThemeProvider>
     );
-};
-
-export default App;
+}
